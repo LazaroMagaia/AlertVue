@@ -1,0 +1,51 @@
+
+.navbar-content 
+{
+    padding: 20px 0;
+
+}
+.navbar-content ul 
+{
+    display: flex;
+    justify-content: center;
+    list-style-type:none;
+}
+.navbar-content ul li
+{
+    margin:0 10px;
+}
+.navbar-content ul li :is(a,a:hover)
+{
+    text-decoration: none;
+    color: #000000;
+}
+.navbar-content ul li  a.active{
+    text-decoration: underline;
+}
+/*************************ADMIN****************************/
+.all
+{
+    margin: 60px 0;
+    display: flex;
+}
+.all h1
+{
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    margin: 0 5px;
+    margin-top: 5px;
+}
+/**********************ADMIN ALERT************************/
+
+.table-alert
+{
+    text-align: center;
+    margin: 40px 0;
+}
+
+/**********************ADMIN CREATE **********************/
+.form
+{
+   display: flex;
+   justify-content: center;
+}
