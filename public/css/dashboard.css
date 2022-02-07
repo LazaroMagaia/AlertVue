@@ -1,0 +1,53 @@
+*{
+    font-family: 'Poppins', sans-serif;
+}
+.sidebar
+{
+    position: fixed;
+    width: 250px;
+    height: 100vh;
+    background-color: #ffff;
+}
+.sidebar ul
+{
+    list-style-type: none;
+}
+.sidebar ul li
+{
+    margin: 10px 0;
+    width: 95%;
+    height: 30px;
+}
+
+.sidebar ul li a
+{
+    text-decoration: none;
+    text-align: center;
+    /*color: #F0EBE8;*/
+    color:#15161A;
+    padding: 5px 5px;
+    font-size: 1.1rem;
+}
+.sidebar ul li a.active
+{
+    background-color: #070B26;
+    border-radius:10px;
+    padding: 0 10px;
+    color: #F0EBE8;
+}
+.btn-navbar
+{
+    margin-left: 260px;
+    margin-top: 10px;
+}
+
+.btn-navbar i
+{
+    color: #070B26;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+.space-handle
+{
+    margin: 60px 0;
+}
