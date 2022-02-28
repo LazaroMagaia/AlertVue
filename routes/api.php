@@ -19,7 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('search/{id}',[APIController::class,'index'])->name("search");
+Route::post('search',[APIController::class,'index'])->name("search");
 
 Route::get("apache_service_dbs",[APIController::class,"apache_service_dbs"])
 ->name("apache_service_dbs");
@@ -27,8 +27,14 @@ Route::get("apache_service_dbs",[APIController::class,"apache_service_dbs"])
 Route::post("createAlert/{id}",[APIController::class,"createAlert"])
 ->name("createAlert");
 
+Route::post("editAlert/{id}",[APIController::class,"editAlert"])
+->name("createditAlerteAlert");
 /**
  * ALERT FROM USER
  */
 Route::get("allAlert/{id}",[APIController::class,"allAlert"])
 ->name("allAlert");
+
+Route::get("delete/{id}",[APIController::class,"deleteAlert"])
+->name("deleteAlert");
+

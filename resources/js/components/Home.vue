@@ -7,7 +7,7 @@
                         <h3>O meu site esta offline ?</h3>
                         <p>Caiu para todos ou so para mim</p>
                         <form @submit.prevent="SearchDomain">
-                            <input type="text" v-model.trim="search"
+                            <input type="text" v-model="form.search"
                             name="search">
                             <button type="submit" :disabled="SubmitStatus">
                                 <span v-if="SubmitStatus">Descobrindo...</span>
@@ -26,7 +26,7 @@
                                 <span v-if="erros === false">Nao conseguimos acessar o seu site</span>
                             </div>
                             <div v-if="erros === true">
-                                <p>Dominio invalido</p>
+                                <p>Nao conseguimos acessar o site</p>
                                 <span>tem certeza que eh esse o dominio ?</span>
                             </div>
                     </div>
@@ -52,7 +52,7 @@
                                                 <tbody>
                                                     <tr v-for="domain in alldomain.data" :key="domain.id">
                                                         <td>{{domain.name_url}}</td>
-                                                        <td>{{dateTime(domain.time_search)}}</td>
+                                                        <td>{{domain.time_search}}</td>
                                                         <td v-if="domain.status=== 1"><i class="bi bi-emoji-smile-fill"></i> FUNCIONANDO NORMALMENTE</td>
                                                         <td v-if="domain.status=== 0"><i class="bi bi-x-circle-fill"></i> FORA DO AR</td>
                                                     </tr>
@@ -77,7 +77,9 @@ import moment from 'moment';
         data()
         {
             return{
-                search:'',
+                form:{
+                    search:'',
+                },
                 searchResponse:'',
                 alldomain:[],
                 alldomainStatus:true,
@@ -92,7 +94,7 @@ import moment from 'moment';
         methods:{
              SearchDomain(){
                 this.SubmitStatus =true;
-                axios.post("http://127.0.0.1:8000/api/search/"+this.search)
+                axios.post("http://127.0.0.1:8000/api/search",this.form)
                 .then(()=>{
                     this.erros = false;
                     this.searchResponse = true;
@@ -114,10 +116,6 @@ import moment from 'moment';
                     this.alldomainStatus = false;
                 })
             },
-            dateTime(h){
-                moment.locale("pt");
-                return h;
-            }
         }
     }
 </script>

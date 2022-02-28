@@ -4,10 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Apache_service_db;
-use App\Models\User;
 use DateTime;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class APIController extends Controller
@@ -70,7 +68,7 @@ class APIController extends Controller
      * GET ALL DOMAINS AS SEARCH FUNCTION
      */
     public function apache_service_dbs(){
-        $ap_serv_bd = DB::table("apache_service_dbs")->orderByDesc("time_search")->limit(10)->get();
+        $ap_serv_bd = DB::table("apache_service_dbs")->orderByDesc("time_search")->get();
         if($ap_serv_bd)
         {
             foreach($ap_serv_bd as $value)
@@ -103,7 +101,7 @@ class APIController extends Controller
             $data['status'] = true;
             $data['date_time_reset'] = new DateTime();
             $tb = DB::table('user_server_dbs')->insert($data);
-            return response()->json(["message"=>"Enviado com sucesso e esta online"]);
+            return response()->json(["message"=>"Enviado com sucesso"]);
         }else
         {
             $data['status'] = false;
@@ -112,12 +110,5 @@ class APIController extends Controller
             $tb = DB::table('user_server_dbs')->insert($data);
             return response()->json(["message"=>"Enviado com sucesso e o site esta offline"]);
         }
-    }
-    public function allAlert()
-    {
-        $user = User::find(Auth::user()->id);
-        $userId =$user->id;
-        dd($userId);
-        return response()->json(["message"=>$userId]);
     }
 }

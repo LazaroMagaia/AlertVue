@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\APIRoutes;
+use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -19,12 +21,13 @@ Route::get('/', function () {
 
 Auth::routes(["register"=>false]);
 
-Route::group(['prefix'=>'admin'],function(){
+Route::prefix('admin')->middleware('auth')->group(function(){
     Route::get('/', function () {
         return view('admin.index');
-    });
+    })->name("admin.index");
 
     Route::get('/alert', function () {
         return view('admin.alert.index');
     });
+    Route::get('/alert/edit/{id}',[APIRoutes::class,'edit'])->name("alert.edit");
 });
