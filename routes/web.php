@@ -19,7 +19,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes(["register"=>false]);
+Auth::routes();
 
 Route::prefix('admin')->middleware('auth')->group(function(){
     Route::get('/', function () {

@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use App\Mail\serverDown;
 use App\Mail\serverUp;
+use App\Models\DownUpServer;
+use App\Models\staticServer;
 use DateTime;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -29,8 +31,11 @@ class AlertEmail extends Command
      *
      * @return void
      */
-    public function __construct()
+    private $static,$downup;
+    public function __construct(DownUpServer $downup,staticServer $static)
     {
+        $this->downup = $downup;
+        $this->static = $static;
         parent::__construct();
     }
     /**
@@ -75,7 +80,7 @@ class AlertEmail extends Command
              * CICLO PARA FAZER O ENVIO DE EMAILS
              */
             $i++;
-            if($total)
+            if($i == $total)
             {
                 $i=0;
             }
@@ -90,16 +95,19 @@ class AlertEmail extends Command
                     /**
                      * NO BANCO DE DADOS ENTRA STATUS  POSITIVO
                      */
-                    if($dbs->date_down)
+                    if($dbs->date_down != null)
                     {
+                        $verification=true;
                         $data["date_up"] = new DateTime();
                         $data["date_down"] = null;
                         $data["date_time_reset"] = new DateTime();
-                        $insert =DB::table('user_server_dbs')->update($data);
+                        $insert =DB::table('user_server_dbs')->where("id",$site->id)->update($data);
                         /**
                          * SEND EMAIL MESSAGE
                          */
                         $this->sendUp($user,$dbs);
+                        $this->staticServer($site->id,$verification);
+                        $this->downAndUp($site->id,$verification);
                     }else
                     {
                         $data["date_time_reset"] = new DateTime();
@@ -107,6 +115,7 @@ class AlertEmail extends Command
                     }
                 }else
                 {
+                    $verification=false;
                     /**
                      * NO BANCO DE DADOS ENTRA STATUS  NEGATIVO E ENVIA UMA MENSAGEM AO USUARIO
                      */
@@ -118,6 +127,8 @@ class AlertEmail extends Command
                      * SEND EMAIL MESSAGE
                      */
                     $this->sendDown($user,$dbs);
+                    $this->staticServer($site->id,$verification);
+                    $this->downAndUp($site->id,$verification);
                 }
             }
         }
@@ -130,5 +141,59 @@ class AlertEmail extends Command
     }
     public function sendUp($user,$site){
         Mail::to($user->email)->send(new serverUp($user,$site));
+    }
+    public function staticServer($site,$verification)
+    {
+        $data =[];
+        if($verification)
+        {
+            $verSite = DB::table("static_servers")->where("site_id",$site)->first();
+            /**
+             * Quer dizer que servidor voltou ao ar
+             */
+            $data["site_id"] = $site;
+            if($verSite)
+            {
+                $data["up_count"] = $verSite->down_count + 1;
+                $verSite = DB::table("static_servers")->where("site_id",$site)->update($data);
+            }else
+            {
+                $data["up_count"] = 1;
+                $verSite = DB::table("static_servers")->insert($data);
+            }
+        }else
+        {
+            $verSite = DB::table("static_servers")->where("site_id",$site)->first();
+            /**
+             * Quer dizer que servidor voltou ao ar
+             */
+            $data["site_id"] = $site;
+            if($verSite)
+            {
+                $data["down_count"] = $verSite->down_count + 1;
+                $update = DB::table("static_servers")->where("site_id",$site)->update($data);
+            }else
+            {
+                $data["down_count"] = 1;
+                $verSite = DB::table("static_servers")->insert($data);
+            }
+        }
+    }
+    public function downAndUp($site,$verification)
+    {
+        if($verification)
+        {
+
+            $data["site_id"] = $site;
+            $data["up_server"] = new DateTime();
+            //$data["down_count"] = new DateTime();
+            $verSite = DB::table("down_up_servers")->insert($data);
+        }else
+        {
+            $data["site_id"] = $site;
+            //$data["up_count"] = new DateTime();
+            $data["down_server"] = new DateTime();
+            $verSite = DB::table("down_up_servers")->insert($data);
+        }
     }
 }
